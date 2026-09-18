@@ -89,10 +89,12 @@ def create_uncertainty_map_from_samples(folder: str, patients: list = None, outp
     setup_logging(output_dir)
     
     if roi_dict:
-        import sys
-        sys.path.append(os.path.dirname(roi_dict))
-        from roi_dict import ROI_DICT as roi_dict_data
-    
+        import runpy
+        # assume roi_dict is a path to a .py file that defines ROI_DICT
+        module_vars = runpy.run_path(roi_dict)
+        if 'ROI_DICT' not in module_vars:
+            raise ImportError(f"Provided roi_dict file {roi_dict} does not define ROI_DICT")
+        roi_dict_data = module_vars['ROI_DICT']
         print(roi_dict_data)
         
     for patient in tqdm(patients, desc="Patients"):

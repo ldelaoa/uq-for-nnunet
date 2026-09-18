@@ -115,6 +115,11 @@ def main():
 
     args = parser.parse_args()
 
+    # default process all patients if not specified
+    if args.patients is None:
+        args.patients = [f.split('_')[1] for f in os.listdir(args.folder) if f.endswith('.nii.gz')]
+        logging.info(f"No specific patients provided. Processing all patients: {args.patients}")
+        
     # Set default output folder
     if args.output_dir is None:
         args.output_dir = os.path.join(args.folder, "combined_segmentations")
